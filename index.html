@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website Kelas 8C</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        /* --- RESET & BASIC STYLE --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(-45deg, #000000, #8A2BE2, #4169E1, #9400D3, #FF00FF, #FFFFFF);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            width: 100%;
+            min-height: 100vh; 
+            color: white;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* --- NAVBAR --- */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 5%; 
+            background: rgba(255, 255, 255, 0.1); 
+            backdrop-filter: blur(10px); 
+            -webkit-backdrop-filter: blur(10px); 
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2); 
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo-container {
+            width: 35px; 
+            height: 35px;
+            background-color: #fff;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+            flex-shrink: 0; 
+        }
+
+        .logo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px; 
+            font-weight: 500;
+            font-size: 0.95rem; 
+            text-shadow: 0px 0px 4px rgba(0,0,0,0.8); 
+            transition: 0.3s;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: #ffffff; 
+            text-shadow: 0 0 10px white;
+        }
+
+        /* --- HERO SECTION (TAMPILAN UTAMA) --- */
+        /* DEFAULT: MODE LANDSCAPE (SAMPING-SAMPINGAN) */
+        .hero-container {
+            display: flex;
+            flex-direction: row; /* Teks Kiri, Banner Kanan */
+            justify-content: space-between;
+            align-items: center; 
+            padding: 100px 5% 50px;
+            min-height: 100vh;
+            gap: 20px;
+        }
+
+        /* --- BAGIAN KIRI (TEKS & UI) --- */
+        .left-content {
+            flex: 1; 
+            max-width: 50%; /* Membatasi lebar teks agar tidak menabrak banner */
+            z-index: 2;
+        }
+
+        .greeting {
+            font-size: 2.2rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 5px rgba(0,0,0,0.6);
+            line-height: 1.2;
+        }
+
+        .description {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 25px;
+            background: rgba(0, 0, 0, 0.4); 
+            padding: 15px;
+            border-radius: 10px;
+            backdrop-filter: blur(5px); 
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9rem;
+            transition: transform 0.2s;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+        }
+
+        .btn-spotify {
+            background-color: #1DB954; 
+            color: white;
+        }
+
+        /* COUNTDOWN */
+        .countdown-container {
+            text-align: left;
+            background: rgba(255,255,255,0.1);
+            padding: 10px 15px;
+            border-radius: 8px;
+            display: inline-block;
+        }
+
+        .countdown-title {
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #ddd;
+        }
+
+        #timer {
+            font-family: 'Courier New', Courier, monospace; 
+            font-size: 1rem;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        /* --- BAGIAN KANAN (BANNER) --- */
+        .right-content {
+            flex: 1; 
+            display: flex;
+            justify-content: flex-end; /* Dorong ke kanan */
+            align-items: center;
+            width: 50%;
+        }
+
+        .banner-wrapper {
+            width: 100%;
+            max-width: 550px; 
+            aspect-ratio: 16 / 9; 
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4); 
+            background-color: rgba(255,255,255,0.1); 
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+
+        .slides {
+            display: flex;
+            width: 400%; 
+            height: 100%;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .slide {
+            width: 25%;
+            height: 100%;
+        }
+
+        .slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0,0,0,0.5);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            z-index: 10;
+            font-size: 1.2rem;
+            border-radius: 5px;
+        }
+        .prev { left: 10px; }
+        .next { right: 10px; }
+
+        /* --- SPOTIFY PLAYER --- */
+        #spotify-embed {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            height: 380px;
+            background: #000;
+            z-index: 200;
+            border-radius: 12px;
+            box-shadow: 0 0 25px rgba(0,0,0,0.6);
+            overflow: hidden;
+        }
+        
+        .close-spotify {
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            z-index: 201;
+            background: rgba(0,0,0,0.5);
+            padding: 2px 8px;
+            border-radius: 50%;
+        }
+
+        /* --- MODE KHUSUS HP BERDIRI (PORTRAIT) --- */
+        /* Ini adalah kunci perbaikannya. 
+           Layout hanya akan berubah tumpuk jika orientasi HP 'portrait' (Berdiri).
+           Jika miring, dia akan tetap pakai layout 'flex-direction: row' (Samping-sampingan).
+        */
+        @media screen and (orientation: portrait) {
+            
+            nav {
+                padding: 15px 20px;
+            }
+
+            .hero-container {
+                flex-direction: column; /* Ubah jadi atas-bawah */
+                text-align: center;
+                padding-top: 100px;
+                gap: 40px;
+            }
+
+            .left-content {
+                width: 100%;
+                max-width: 100%;
+                padding-right: 0;
+            }
+
+            .description {
+                text-align: left; 
+            }
+
+            .btn-group {
+                justify-content: center;
+            }
+
+            .countdown-container {
+                text-align: center;
+                display: block;
+                margin: 0 auto;
+            }
+
+            .right-content {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .banner-wrapper {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo-container">
+            <img src="logo kelas.png" alt="Logo">
+        </div>
+        <div class="nav-links">
+            <a href="#" class="active">Home</a>
+            <a href="info.html">Info 8C</a>
+            <a href="#">Foto Aib</a>
+            <a href="#">Galeri</a>
+            <a href="feed.html">Feed</a>
+        </div>
+    </nav>
+
+    <div class="hero-container">
+        
+        <div class="left-content">
+            <div class="greeting">Hai selamat datang di website Delapan Ce</div>
+            <div class="description">
+                <b>kamu tau tidak web ini berfungsi untuk apa?..</b><br>
+                Jadi web ini berfungsi untuk melihat aktivitas kita aktivitas foto bersama sampai hal random lainya dan juga melihat kenangan kita jika sudah memulai tahun ajaran baru di kelas 9 dan lulus sekolah.<br><br>
+                Terimakasih sudah berkunjung~
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-spotify" onclick="toggleSpotify()">Playlist Spotify</button>
+            </div>
+
+            <div class="countdown-container">
+                <div class="countdown-title">Sisa Waktu Belajar di 8C</div>
+                <div id="timer">Memuat waktu...</div>
+            </div>
+        </div>
+
+        <div class="right-content">
+            <div class="banner-wrapper">
+                <div class="slides">
+                    <div class="slide"><img src="expansion_20260116203414355.jpg" alt="Foto 1"></div>
+                    <div class="slide"><img src="expansion_20260116204111690.jpg" alt="Foto 2"></div>
+                    <div class="slide"><img src="https://via.placeholder.com/800x450/777/fff?text=Foto+3" alt="Foto 3"></div>
+                    <div class="slide"><img src="https://via.placeholder.com/800x450/999/fff?text=Foto+4" alt="Foto 4"></div>
+                </div>
+                <button class="nav-btn prev" onclick="moveSlide(-1)">❮</button>
+                <button class="nav-btn next" onclick="moveSlide(1)">❯</button>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="spotify-embed">
+        <span class="close-spotify" onclick="toggleSpotify()">X</span>
+        <iframe 
+            style="border-radius:12px" 
+            src="https://open.spotify.com/embed/playlist/7noYV66KvH2Eq95dWnuege" 
+            width="100%" 
+            height="380" 
+            frameborder="0" 
+            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+            loading="lazy">
+        </iframe>
+    </div>
+
+    <script>
+        // COUNTDOWN
+        function updateTimer() {
+            const endDate = new Date("July 13, 2026 00:00:00").getTime();
+            const now = new Date().getTime();
+            const distance = endDate - now;
+
+            if (distance < 0) {
+                document.getElementById("timer").innerHTML = "WAKTU HABIS / LULUS!";
+                return;
+            }
+
+            const months = Math.floor(distance / (1000 * 60 * 60 * 24 * 30.44));
+            const weeks = Math.floor((distance % (1000 * 60 * 60 * 24 * 30.44)) / (1000 * 60 * 60 * 24 * 7));
+            const days = Math.floor((distance % (1000 * 60 * 60 * 24 * 7)) / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            
+            document.getElementById("timer").innerHTML = 
+                `${months} Bln : ${weeks} Mgg : ${hours} Jam : ${minutes} Mnt : ${seconds} Detik`;
+        }
+        setInterval(updateTimer, 1000); 
+
+        // BANNER SLIDER
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        function moveSlide(step) {
+            currentSlide += step;
+            if (currentSlide >= totalSlides) currentSlide = 0;
+            if (currentSlide < 0) currentSlide = totalSlides - 1;
+            document.querySelector('.slides').style.transform = `translateX(-${currentSlide * 25}%)`; 
+        }
+        setInterval(() => { moveSlide(1); }, 5000);
+
+        // SPOTIFY
+        function toggleSpotify() {
+            const player = document.getElementById('spotify-embed');
+            player.style.display = (player.style.display === 'block') ? 'none' : 'block';
+        }
+
+        // --- SISTEM DETEKSI SHAKE (KOCOK) & CONFETTI ---
+        let x = 0, y = 0, z = 0;
+        let lastX = 0, lastY = 0, lastZ = 0;
+        let lastUpdate = 0;
+        let lastPartyTime = 0; 
+        const SHAKE_THRESHOLD = 800; 
+        const COOLDOWN_TIME = 1500; 
+
+        if (window.DeviceMotionEvent) {
+            window.addEventListener('devicemotion', function(event) {
+                const acceleration = event.accelerationIncludingGravity;
+                
+                if (!acceleration) return;
+
+                const currentTime = new Date().getTime();
+                
+                if ((currentTime - lastUpdate) > 100) {
+                    const diffTime = currentTime - lastUpdate;
+                    lastUpdate = currentTime;
+
+                    x = acceleration.x;
+                    y = acceleration.y;
+                    z = acceleration.z;
+
+                    const speed = Math.abs(x + y + z - lastX - lastY - lastZ) / diffTime * 10000;
+
+                    if (speed > SHAKE_THRESHOLD) {
+                        if ((currentTime - lastPartyTime) > COOLDOWN_TIME) {
+                            triggerPartyEffect();
+                            lastPartyTime = currentTime; 
+                        }
+                    }
+
+                    lastX = x;
+                    lastY = y;
+                    lastZ = z;
+                }
+            });
+        }
+
+        function triggerPartyEffect() {
+            if (navigator.vibrate) {
+                navigator.vibrate(400); 
+            }
+
+            const count = 200;
+            const defaults = {
+                origin: { y: 0.7 },
+                colors: ['#8A2BE2', '#4169E1', '#9400D3', '#FF00FF', '#FFFFFF']
+            };
+
+            function fire(particleRatio, opts) {
+                confetti(Object.assign({}, defaults, opts, {
+                    particleCount: Math.floor(count * particleRatio)
+                }));
+            }
+
+            fire(0.25, { spread: 26, startVelocity: 55 });
+            fire(0.2, { spread: 60 });
+            fire(0.35, { spread: 100, decay: 0.91, scalar: 0.8 });
+            fire(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 });
+            fire(0.1, { spread: 120, startVelocity: 45 });
+        }
+    </script>
+</body>
+</html>
